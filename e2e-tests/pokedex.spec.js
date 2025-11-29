@@ -10,4 +10,13 @@ describe('Pokedex', () => {
       )
     ).toBeVisible()
   })
+
+  test('can navigate from main page to a specific pokemon page', async ({
+    page,
+  }) => {
+    await page.goto('')
+    await page.getByText('squirtle').click()
+
+    await expect(page.getByText('torrent')).toBeVisible()
+  })
 })
