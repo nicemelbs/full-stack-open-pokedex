@@ -21,6 +21,14 @@ jobs:
         run: npm run build
       - name: test
         run: npm run test
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            playwright-${{ runner.os }}-
       - name: install playwright browsers
         run: npx playwright install --with-deps
       - name: test:e2e
