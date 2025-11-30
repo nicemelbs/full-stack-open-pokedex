@@ -43,7 +43,7 @@ jobs:
 
       - name: Deployment Success Discord Notification
         uses: sarisia/actions-status-discord@v1
-        if: ${{ success() && github.event_name == 'push' && github.ref == 'refs/head/main'}}
+        if: ${{ success() }}
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
           nodetail: true
@@ -57,7 +57,7 @@ jobs:
 
       - name: Deployment failed
         uses: sarisia/actions-status-discord@v1
-        if: ${{ failure() && github.event_name == 'push' && github.ref == 'refs/head/main'}}
+        if: ${{ failure() }}
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
           color: 0xe06c75
