@@ -38,32 +38,33 @@ jobs:
         run: npm run test:e2e
 
       - name: Render deploy
+        id: render_deploy
         if: ${{github.event_name == 'push' && github.ref == 'refs/heads/main'}}
         run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
 
       - name: Deployment Success Discord Notification
         uses: sarisia/actions-status-discord@v1
-        if: ${{ success() && github.event_name == 'push' && github.ref == 'refs/head/main'}}
+        if: ${{ success() && steps.render_deploy.outcome != 'skipped' }}
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
           nodetail: true
           color: 0x98c379
-          content: 'Pokedex deployment successful!'
-          description: |
-            Version `${{ github.event.release.tag_name }}`
-            'https://full-stack-open-pokedex-uhpf.onrender.com'
+          title: 'Pokedex deployment successful!'
+          status: Success
+          description: https://full-stack-open-pokedex-uhpf.onrender.com
           username: Professor Oak
           avatar_url: ${{ secrets.PROF_OAK }}
 
       - name: Deployment failed
         uses: sarisia/actions-status-discord@v1
-        if: ${{ failure() && github.event_name == 'push' && github.ref == 'refs/head/main'}}
+        if: ${{ failure() && steps.render_deploy.outcome != 'skipped'}}
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
           color: 0xe06c75
-          content: Failed to deploy build.
+          title: 'Failed to deploy build'
           description: Someone made a boo-boo. Commit ${{ github.sha }}, ${{ github.event.head_commit.message }}
           username: Professor Oak
+          status: Failure
           avatar_url: ${{ secrets.PROF_OAK }}
 
   tag_release:
