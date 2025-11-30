@@ -38,12 +38,13 @@ jobs:
         run: npm run test:e2e
 
       - name: Render deploy
+        id: render_deploy
         if: ${{github.event_name == 'push' && github.ref == 'refs/heads/main'}}
         run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
 
       - name: Deployment Success Discord Notification
         uses: sarisia/actions-status-discord@v1
-        if: ${{ success() }}
+        if: ${{ success() && steps.render_deploy.outcome != 'skipped' }}
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
           nodetail: true
@@ -56,7 +57,7 @@ jobs:
 
       - name: Deployment failed
         uses: sarisia/actions-status-discord@v1
-        if: ${{ failure() }}
+        if: ${{ failure() && steps.render_deploy.outcome != 'skipped'}}
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
           color: 0xe06c75
