@@ -41,6 +41,26 @@ jobs:
         if: ${{github.event_name == 'push' && github.ref == 'refs/heads/main'}}
         run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
 
+      - name: Deployment Success Discord Notification
+        uses: rjstone/discord-webhook-notify@v2
+        if: success()
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          severity: info
+          color: '#98c379'
+          text: Pokedex Deployment Successful!
+          description: All green!
+
+      - name: Deployment failed
+        uses: rjstone/discord-webhook-notify@v2
+        if: failure()
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          severity: error
+          color: '#e06c75'
+          text: Failed to deploy build.
+          description: Someone made a boo-boo. Commit ${{ github.sha }}, ${{ github.event.head_commit.message }}
+
   tag_release:
     needs: [simple_deployment_pipeline]
     runs-on: ubuntu-latest
