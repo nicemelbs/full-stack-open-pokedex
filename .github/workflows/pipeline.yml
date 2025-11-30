@@ -48,10 +48,11 @@ jobs:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
           nodetail: true
           color: 0x98c379
-          content: 'Pokedex deployment successful!'
+          title: 'Pokedex deployment successful!'
+          status: Success
           description: |
-            Version `${{ github.event.release.tag_name }}`
-            'https://full-stack-open-pokedex-uhpf.onrender.com'
+            Version ${{ github.event.release.tag_name }}
+            https://full-stack-open-pokedex-uhpf.onrender.com
           username: Professor Oak
           avatar_url: ${{ secrets.PROF_OAK }}
 
@@ -61,9 +62,10 @@ jobs:
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
           color: 0xe06c75
-          content: Failed to deploy build.
+          title: 'Failed to deploy build'
           description: Someone made a boo-boo. Commit ${{ github.sha }}, ${{ github.event.head_commit.message }}
           username: Professor Oak
+          status: Failure
           avatar_url: ${{ secrets.PROF_OAK }}
 
   tag_release:
