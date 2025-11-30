@@ -42,24 +42,29 @@ jobs:
         run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
 
       - name: Deployment Success Discord Notification
-        uses: rjstone/discord-webhook-notify@v2
-        if: success()
+        uses: sarisia/actions-status-discord@v1
+        if: ${{ success() && github.event_name == 'push' && github.ref == 'refs/head/main'}}
         with:
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-          severity: info
-          color: '#98c379'
-          text: Pokedex Deployment Successful!
-          description: All green!
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          nodetail: true
+          color: 0x98c379
+          content: 'Pokedex deployment successful!'
+          description: |
+            Version `${{ github.event.release.tag_name }}`
+            'https://full-stack-open-pokedex-uhpf.onrender.com'
+          username: Professor Oak
+          avatar_url: ${{ secrets.PROF_OAK }}
 
       - name: Deployment failed
-        uses: rjstone/discord-webhook-notify@v2
-        if: failure()
+        uses: sarisia/actions-status-discord@v1
+        if: ${{ failure() && github.event_name == 'push' && github.ref == 'refs/head/main'}}
         with:
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-          severity: error
-          color: '#e06c75'
-          text: Failed to deploy build.
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          color: 0xe06c75
+          content: Failed to deploy build.
           description: Someone made a boo-boo. Commit ${{ github.sha }}, ${{ github.event.head_commit.message }}
+          username: Professor Oak
+          avatar_url: ${{ secrets.PROF_OAK }}
 
   tag_release:
     needs: [simple_deployment_pipeline]
