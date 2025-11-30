@@ -42,24 +42,22 @@ jobs:
         run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
 
       - name: Deployment Success Discord Notification
-        uses: rjstone/discord-webhook-notify@v2
+        uses: lettermint/action-discord-releases@v1.0.1
         if: success()
         with:
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-          severity: info
+          webhook_url: ${{ secrets.DISCORD_WEBHOOK }}
           color: '#98c379'
-          text: Pokedex Deployment Successful!
-          description: All green!
+          content: 'Pokedex deployment successful!'
+          footer: 'https://full-stack-open-pokedex-uhpf.onrender.com'
 
       - name: Deployment failed
-        uses: rjstone/discord-webhook-notify@v2
+        uses: lettermint/action-discord-releases@v1.0.1
         if: failure()
         with:
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-          severity: error
+          webhook_url: ${{ secrets.DISCORD_WEBHOOK }}
           color: '#e06c75'
-          text: Failed to deploy build.
-          description: Someone made a boo-boo. Commit ${{ github.sha }}, ${{ github.event.head_commit.message }}
+          content: Failed to deploy build.
+          footer: Someone made a boo-boo. Commit ${{ github.sha }}, ${{ github.event.head_commit.message }}
 
   tag_release:
     needs: [simple_deployment_pipeline]
