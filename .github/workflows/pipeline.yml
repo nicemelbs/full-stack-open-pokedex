@@ -50,9 +50,7 @@ jobs:
           color: 0x98c379
           title: 'Pokedex deployment successful!'
           status: Success
-          description: |
-            Version ${{ github.event.release.tag_name }}
-            https://full-stack-open-pokedex-uhpf.onrender.com
+          description: https://full-stack-open-pokedex-uhpf.onrender.com
           username: Professor Oak
           avatar_url: ${{ secrets.PROF_OAK }}
 
