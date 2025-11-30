@@ -43,22 +43,28 @@ jobs:
 
       - name: Deployment Success Discord Notification
         uses: sarisia/actions-status-discord@v1
-        if: success()
+        if: ${{ success() && github.event_name == 'push' && github.ref == 'refs/head/main'}}
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
           nodetail: true
-          color: '#98c379'
+          color: 0x98c379
           content: 'Pokedex deployment successful!'
-          description: 'https://full-stack-open-pokedex-uhpf.onrender.com'
+          description: |
+            Version `${{ github.event.release.tag_name }}`
+            'https://full-stack-open-pokedex-uhpf.onrender.com'
+          username: Professor Oak
+          avatar_url: ${{ secrets.PROF_OAK }}
 
       - name: Deployment failed
         uses: sarisia/actions-status-discord@v1
-        if: failure()
+        if: ${{ failure() && github.event_name == 'push' && github.ref == 'refs/head/main'}}
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
-          color: '#e06c75'
+          color: 0xe06c75
           content: Failed to deploy build.
           description: Someone made a boo-boo. Commit ${{ github.sha }}, ${{ github.event.head_commit.message }}
+          username: Professor Oak
+          avatar_url: ${{ secrets.PROF_OAK }}
 
   tag_release:
     needs: [simple_deployment_pipeline]
