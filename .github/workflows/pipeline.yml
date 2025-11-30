@@ -47,7 +47,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Bump version and push tag
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main'}}
+        env: 
+          COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && !contains(env.COMMIT_MESSAGES, '#skip')}}
         uses: anothrNick/github-tag-action@1.64.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN}}
