@@ -13,4 +13,4 @@ jobs:
           url: https://full-stack-open-pokedex-uhpf.onrender.com/health
           follow-redirect: false
           max-attempts: 3
-          retry-delay: 20
+          retry-delay: 20s
